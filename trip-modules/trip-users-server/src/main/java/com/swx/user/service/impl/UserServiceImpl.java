@@ -2,7 +2,9 @@ package com.swx.user.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.swx.common.core.exception.BizException;
 import com.swx.common.core.utils.Md5Utils;
+import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
 import com.swx.user.domain.UserInfo;
 import com.swx.user.mapper.UserInfoMapper;
@@ -41,12 +43,12 @@ public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> imple
         // 1. 基于手机号查询是否已经存在该手机号，如果存在则返回异常
         UserInfo byPhone = findByPhone(req.getPhone());
         if (byPhone != null) {
-            throw new RuntimeException("手机号已存在，请不要重复注册");
+            throw new BizException(R.CODE_REGISTER_ERROR, "手机号已存在，请不要重复注册");
         }
         // 2. 从 redis 中获取验证码与前端传入的验证码进行校验是否一致，如果不一致则抛出异常
         String code = redisService.getCacheObject("USERS:REGISTER:VERIFY_CODE:" + req.getPhone());
         if (!req.getVerifyCode().equalsIgnoreCase(code)) {
-            throw new RuntimeException("验证码错误");
+            throw new BizException(R.CODE_REGISTER_ERROR, "验证码错误");
         }
         // 3. 将验证码从 redis 中删除
         redisService.deleteObject("USERS:REGISTER:VERIFY_CODE:" + req.getPhone());

@@ -13,6 +13,7 @@ public class R<T> {
     public static final int CODE_NOLOGIN = 401;
     public static final String MSG_NOLOGIN = "请先登陆";
     public static final int CODE_ERROR = 500;
+    public static final int CODE_REGISTER_ERROR = 500;
     public static final String MSG_ERROR = "系统异常，请联系管理员";
     public static final int CODE_ERROR_PARAM = 501;
 
