@@ -1,6 +1,7 @@
 package com.swx.user.service.impl;
 
 import com.swx.common.redis.service.RedisService;
+import com.swx.user.redis.key.UserRedisKeyPrefix;
 import com.swx.user.service.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,8 @@ public class SmsServiceImpl implements SmsService {
         // 2. 生成验证码
         String code = this.generateVerifyCode("LETTER", 4);
         // 3. 缓存验证码
-        redisService.setCacheObject("USERS:REGISTER:VERIFY_CODE:" + phone, code, 10L, TimeUnit.MINUTES);
+        UserRedisKeyPrefix keyPrefix = UserRedisKeyPrefix.USER_REGISTER_VERIFY_CODE_STRING;
+        redisService.setCacheObject(keyPrefix.fullKey(phone), code, keyPrefix.getTimeout(), keyPrefix.getUnit());
         // TODO 4. 调用第三方接口，发送验证码
     }
 

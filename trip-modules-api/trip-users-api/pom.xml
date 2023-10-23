@@ -21,5 +21,10 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <scope>provided</scope> <!-- 只在编译和测试生效，运行时不生效，阻止依赖的传递性 -->
         </dependency>
+        <!-- Redis模块 -->
+        <dependency>
+            <groupId>com.swx</groupId>
+            <artifactId>trip-common-redis</artifactId>
+        </dependency>
     </dependencies>
 </project>
