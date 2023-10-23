@@ -1,15 +1,13 @@
 package com.swx.user.controller;
 
-import com.swx.user.domain.UserInfo;
+import com.swx.common.core.utils.R;
 import com.swx.user.service.UserInfoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserInfoController {
 
     private final UserInfoService userInfoService;
@@ -18,8 +16,8 @@ public class UserInfoController {
         this.userInfoService = userInfoService;
     }
 
-    @GetMapping("/test")
-    public List<UserInfo> test(){
-        return userInfoService.list();
+    @GetMapping("/phone/exists")
+    public R<Boolean> checkExists(String phone){
+        return R.ok(userInfoService.findByPhone(phone) != null);
     }
 }
