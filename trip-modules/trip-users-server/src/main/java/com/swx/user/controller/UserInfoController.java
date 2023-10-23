@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 public class UserInfoController {
@@ -23,9 +25,15 @@ public class UserInfoController {
         return R.ok(userInfoService.findByPhone(phone) != null);
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public R<?> register(RegisterRequest req) {
         userInfoService.register(req);
         return R.ok();
+    }
+
+    @PostMapping("/login")
+    public R<Map<String, Object>> login(String username, String password) {
+        Map<String, Object> map = userInfoService.login(username, password);
+        return R.ok(map);
     }
 }

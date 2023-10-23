@@ -6,21 +6,29 @@ import com.swx.common.core.exception.BizException;
 import com.swx.common.core.utils.Md5Utils;
 import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
+import com.swx.common.security.service.TokenService;
+import com.swx.common.security.vo.LoginUser;
 import com.swx.user.domain.UserInfo;
 import com.swx.user.mapper.UserInfoMapper;
 import com.swx.user.redis.key.UserRedisKeyPrefix;
 import com.swx.user.service.UserInfoService;
+import com.swx.user.vo.LoginUserVo;
 import com.swx.user.vo.RegisterRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     private final RedisService redisService;
+    private final TokenService tokenService;
 
-    public UserServiceImpl(RedisService redisService) {
+    public UserServiceImpl(RedisService redisService, TokenService tokenService) {
         this.redisService = redisService;
+        this.tokenService = tokenService;
     }
 
     /**
@@ -61,6 +69,41 @@ public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> imple
         userInfo.setPassword(encryptPassword);
         // 6. 保存用户对象到数据库
         super.save(userInfo);
+    }
+
+    /**
+     * 登陆接口
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return {token, 用户}
+     */
+    @Override
+    public Map<String, Object> login(String username, String password) {
+        // 1. 基于用户名查询用户对象
+        UserInfo userInfo = this.findByPhone(username);
+        if (userInfo == null) {
+            throw new BizException(500401, "用户名或密码错误");
+        }
+        // 2. 对参数密码进行加密
+        String encryptPassword = Md5Utils.getMD5(password + username);
+        // 3. 校验前端密码和数据库密码是否一致
+        if (!encryptPassword.equalsIgnoreCase(userInfo.getPassword())) {
+            throw new BizException(500401, "用户名或密码错误");
+        }
+
+        // 根据用户信息生成 jwt token
+        LoginUser loginUser = new LoginUser();
+        BeanUtils.copyProperties(userInfo, loginUser);
+        String jwtToken = tokenService.createToken(loginUser);
+
+        // 构建 Map 对象，存入Token 和用户对象，返回
+        LoginUserVo loginUserVo = new LoginUserVo();
+        BeanUtils.copyProperties(userInfo, loginUserVo);
+        Map<String, Object> data = new HashMap<>();
+        data.put("token", jwtToken);
+        data.put("user", loginUserVo);
+        return data;
     }
 
     /**

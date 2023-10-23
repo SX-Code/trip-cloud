@@ -36,6 +36,7 @@
         <mybatis-plus.version>3.4.1</mybatis-plus.version>
         <mysql.connector.version>8.0.23</mysql.connector.version>
         <fastjson.version>2.0.41</fastjson.version>
+        <jwt.version>0.12.3</jwt.version>
     </properties>
     <!--  父项目进行统一的依赖版本管理  -->
     <dependencyManagement>
@@ -81,6 +82,22 @@
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+                <version>${jwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

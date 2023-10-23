@@ -17,6 +17,7 @@
     <modules>
         <module>trip-common-core</module>
         <module>trip-common-redis</module>
+        <module>trip-common-security</module>
     </modules>
 
 </project>
