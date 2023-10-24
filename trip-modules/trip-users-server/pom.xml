@@ -12,15 +12,15 @@
     <artifactId>trip-users-server</artifactId>
 
     <dependencies>
+        <!-- 安全模块，做登陆拦截 -->
         <dependency>
             <groupId>com.swx</groupId>
             <artifactId>trip-common-security</artifactId>
-            <version>1.0.0</version>
         </dependency>
+        <!-- 用户的 API 模块 -->
         <dependency>
             <groupId>com.swx</groupId>
             <artifactId>trip-users-api</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

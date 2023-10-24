@@ -51,6 +51,18 @@
                 <artifactId>trip-common-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- 安全模块，做登陆拦截 -->
+            <dependency>
+                <groupId>com.swx</groupId>
+                <artifactId>trip-common-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 用户的 API 模块 -->
+            <dependency>
+                <groupId>com.swx</groupId>
+                <artifactId>trip-users-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>

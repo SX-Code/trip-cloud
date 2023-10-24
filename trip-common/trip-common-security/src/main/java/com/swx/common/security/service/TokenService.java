@@ -2,7 +2,7 @@ package com.swx.common.security.service;
 
 import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.configure.JwtProperties;
-import com.swx.common.security.key.UserRedisKeyPrefix;
+import com.swx.common.security.key.LoginRedisKeyPrefix;
 import com.swx.common.security.vo.LoginUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -53,7 +53,7 @@ public class TokenService {
         loginUser.setToken(uuid);
 
         // 将用户信息缓存到Redis中, 设置过期时间
-        String redisKey = UserRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(uuid);
+        String redisKey = LoginRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(uuid);
         redisService.setCacheObject(redisKey, loginUser, expireTime, TimeUnit.MICROSECONDS);
 
         // 4. 使用JWT生成TOKEN，存入基础信息
@@ -75,7 +75,7 @@ public class TokenService {
         String uuid = (String) body.get(LOGIN_USER_REDIS_UUID);
 
         // 从Redis中获取用户对象
-        String redisKey = UserRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(uuid);
+        String redisKey = LoginRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(uuid);
         return redisService.getCacheObject(redisKey);
     }
 
@@ -92,7 +92,7 @@ public class TokenService {
             long expireTime = loginTime + jwtProperties.getExpireTime() * MINUTES_MILLISECONDS;
             loginUser.setExpireTime(expireTime);
             // 将刷新后的时间覆盖Redis
-            String redisKey = UserRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(loginUser.getToken());
+            String redisKey = LoginRedisKeyPrefix.USER_LOGIN_INFO_STRING.fullKey(loginUser.getToken());
             redisService.setCacheObject(redisKey, loginUser, expireTime, TimeUnit.MICROSECONDS);
         }
     }

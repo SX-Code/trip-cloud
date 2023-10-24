@@ -15,7 +15,4 @@ public class LoginUserVo {
     private String city; // 所在城市
     private String headImgUrl; // 头像
     private String info; // 个性签名
-    private Long loginTime; // 登陆时间
-    private Long expireTime; // 过期时间
-    private String token;
 }

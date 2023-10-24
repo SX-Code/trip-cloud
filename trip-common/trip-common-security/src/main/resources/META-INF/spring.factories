@@ -1,5 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.swx.common.security.configure.JwtProperties, \
-  com.swx.common.security.configure.WebConfig, \
-  com.swx.common.security.interceptor.LoginInterceptor, \
+  com.swx.common.security.configure.JwtAutoConfiguration, \
   com.swx.common.security.service.TokenService
