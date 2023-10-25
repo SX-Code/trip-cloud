@@ -1,7 +1,6 @@
 package com.swx.article.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,15 +16,20 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Destination> implements DestinationService {
 
     private final RegionService regionService;
+    private final ThreadPoolExecutor bizThreadPoolExecutor;
 
-    public DestinationServiceImpl(RegionService regionService) {
+    public DestinationServiceImpl(RegionService regionService, ThreadPoolExecutor bizThreadPoolExecutor) {
         this.regionService = regionService;
+        this.bizThreadPoolExecutor = bizThreadPoolExecutor;
     }
 
     /**
@@ -119,7 +123,7 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
      * @param rid 区域ID
      * @return 热门目的地
      */
-    public List<Destination> findHostList2(Long rid) {
+    public List<Destination> findHostListFor(Long rid) {
         List<Destination> destinations = null;
         LambdaQueryWrapper<Destination> wrapper = new LambdaQueryWrapper<>();
         if (rid < 0) {
@@ -133,6 +137,42 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
             wrapper.clear();
             List<Destination> children = list(wrapper.eq(Destination::getParentId, destination.getId()).last("limit 10"));
             destination.setChildren(children);
+        }
+        return destinations;
+    }
+
+    /**
+     * 使用代码循环方式，有N+1问题
+     * 使用多线程，同时发查询请求
+     *
+     * @param rid 区域ID
+     * @return 热门目的地
+     */
+    public List<Destination> findHostListThread(Long rid) {
+        List<Destination> destinations = null;
+        LambdaQueryWrapper<Destination> wrapper = new LambdaQueryWrapper<>();
+        if (rid < 0) {
+            destinations = list(wrapper.eq(Destination::getParentId, 1));
+        } else {
+            destinations = this.getDestinationByRegionId(rid);
+        }
+        // 如何等待所有异步线程结束，主线程再执行
+        CountDownLatch latch = new CountDownLatch(destinations.size());
+        for (Destination destination : destinations) {
+            // submit有返回值，且支持Callable，execute没有返回值，只支持Runnable
+            bizThreadPoolExecutor.execute(() -> {
+                // 清楚之前的条件
+                List<Destination> children = list(Wrappers.<Destination>lambdaQuery().eq(Destination::getParentId, destination.getId()).last("limit 10"));
+                destination.setChildren(children);
+                // 倒计时数量-1
+                latch.countDown();
+            });
+        }
+        // 返回结果前阻塞等待
+        try {
+            latch.await(10, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return destinations;
     }
