@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Destination> implements DestinationService {
@@ -91,6 +92,34 @@ public class DestinationServiceImpl extends ServiceImpl<DestinationMapper, Desti
      */
     @Override
     public List<Destination> findHotList(Long rid) {
+        List<Destination> destinations = null;
+        if (rid < 0) {
+            destinations = this.baseMapper.selectHotListByRid(rid, null);
+        } else {
+            Region region = regionService.getById(rid);
+            if (region == null) {
+                return Collections.emptyList();
+            }
+            List<Long> ids = region.parseRefIds();
+            destinations = this.baseMapper.selectHotListByRid(rid, ids);
+        }
+        for (Destination destination : destinations) {
+            List<Destination> children = destination.getChildren();
+            if (children == null) {
+                continue;
+            }
+            destination.setChildren(children.stream().limit(10).collect(Collectors.toList()));
+        }
+        return destinations;
+    }
+
+    /**
+     * 使用代码循环方式，有N+1问题
+     *
+     * @param rid 区域ID
+     * @return 热门目的地
+     */
+    public List<Destination> findHostList2(Long rid) {
         List<Destination> destinations = null;
         LambdaQueryWrapper<Destination> wrapper = new LambdaQueryWrapper<>();
         if (rid < 0) {

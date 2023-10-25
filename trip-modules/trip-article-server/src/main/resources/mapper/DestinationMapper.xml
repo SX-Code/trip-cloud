@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swx.article.mapper.DestinationMapper">
+
+    <resultMap id="FullResultMap" type="com.swx.article.domain.Destination">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <collection property="children" ofType="com.swx.article.domain.Destination" columnPrefix="c_">
+            <id property="id" column="id" />
+            <result property="name" column="name" />
+        </collection>
+    </resultMap>
+
+    <select id="selectHotListByRid" resultMap="FullResultMap">
+        SELECT province.id, province.name, city.id c_id, city.name c_name
+        FROM destination province LEFT JOIN destination city ON province.id = city.parent_id
+        <where>
+            <if test="rid == -1">
+                province.parent_id = 1
+            </if>
+            <if test="rid > 0">
+                province.id in
+                    <foreach collection="ids" open="(" separator="," close=")" item="id">
+                        #{id}
+                    </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
