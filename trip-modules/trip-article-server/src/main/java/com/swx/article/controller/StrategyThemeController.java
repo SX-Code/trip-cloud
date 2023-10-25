@@ -7,7 +7,7 @@ import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/strategies/theme")
+@RequestMapping("/strategies/themes")
 public class StrategyThemeController {
 
     private final StrategyThemeService strategyThemeService;

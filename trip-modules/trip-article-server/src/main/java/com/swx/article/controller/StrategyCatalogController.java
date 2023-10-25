@@ -7,7 +7,7 @@ import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/strategies/catalog")
+@RequestMapping("/strategies/catalogs")
 public class StrategyCatalogController {
 
     private final StrategyCatalogService strategyCatalogService;
