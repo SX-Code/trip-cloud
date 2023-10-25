@@ -20,8 +20,8 @@ public class StrategyCatalog {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String name; // 类别名称
-    private Long dest_id; // 目的地
-    private String dest_name; // 目的地名称
+    private Long destId; // 目的地
+    private String destName; // 目的地名称
     private Integer state = STATE_NORMAL; // 类别状态
     private Integer seq; // 类别序号
 

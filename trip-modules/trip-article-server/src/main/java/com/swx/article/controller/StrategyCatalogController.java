@@ -1,8 +1,9 @@
 package com.swx.article.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.swx.article.domain.Destination;
 import com.swx.article.domain.StrategyCatalog;
-import com.swx.article.domain.StrategyTheme;
+import com.swx.article.service.DestinationService;
 import com.swx.article.service.StrategyCatalogService;
 import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class StrategyCatalogController {
 
     private final StrategyCatalogService strategyCatalogService;
+    private final DestinationService destinationService;
 
-    public StrategyCatalogController(StrategyCatalogService strategyCatalogService) {
+    public StrategyCatalogController(StrategyCatalogService strategyCatalogService, DestinationService destinationService) {
         this.strategyCatalogService = strategyCatalogService;
+        this.destinationService = destinationService;
     }
 
     @GetMapping("/query")
@@ -29,6 +32,8 @@ public class StrategyCatalogController {
 
     @PostMapping("/save")
     public R<?> save(StrategyCatalog strategyCatalog) {
+        Destination destination = destinationService.getById(strategyCatalog.getDestId());
+        strategyCatalog.setDestName(destination.getName());
         strategyCatalogService.save(strategyCatalog);
         return R.ok();
     }
