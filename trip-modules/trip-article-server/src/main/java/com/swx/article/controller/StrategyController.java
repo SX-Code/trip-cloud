@@ -1,6 +1,7 @@
 package com.swx.article.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.swx.article.domain.Region;
 import com.swx.article.domain.Strategy;
 import com.swx.article.service.StrategyService;
 import com.swx.common.core.utils.R;
@@ -19,6 +20,11 @@ public class StrategyController {
     @GetMapping("/query")
     public R<Page<Strategy>> pageList(Page<Strategy> page) {
         return R.ok(strategyService.page(page));
+    }
+
+    @GetMapping("/detail")
+    public R<Strategy> getById(Long id) {
+        return R.ok(strategyService.getById(id));
     }
 
     @PostMapping("/save")

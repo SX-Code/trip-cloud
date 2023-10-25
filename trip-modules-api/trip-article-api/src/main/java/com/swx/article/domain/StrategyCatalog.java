@@ -1,6 +1,7 @@
 package com.swx.article.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class StrategyCatalog {
     private Integer state = STATE_NORMAL; // 类别状态
     private Integer seq; // 类别序号
 
+    @TableField(exist = false)
     private List<Strategy> strategies = new ArrayList<>();
 }
