@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-service
+    name: article-service
   cloud:
     nacos:
       server-addr: 124.221.23.47:8848

@@ -15,6 +15,14 @@
     <description>所有微服务子模块 api 父模块，管理所有 api 模块所需的依赖</description>
     <modules>
         <module>trip-users-api</module>
+        <module>trip-article-api</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.swx</groupId>
+            <artifactId>trip-common-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

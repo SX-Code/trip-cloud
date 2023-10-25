@@ -43,6 +43,11 @@
         <dependencies>
             <dependency>
                 <groupId>com.swx</groupId>
+                <artifactId>trip-article-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.swx</groupId>
                 <artifactId>trip-common-core</artifactId>
                 <version>${project.version}</version>
             </dependency>

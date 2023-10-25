@@ -40,3 +40,6 @@ build/
 ### log file ###
 *.log
 log/
+
+trip-website/
+trip_mgrsite/

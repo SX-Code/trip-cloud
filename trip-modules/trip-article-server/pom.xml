@@ -5,22 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.swx</groupId>
-        <artifactId>trip-modules-api</artifactId>
+        <artifactId>trip-modules</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>trip-users-api</artifactId>
+    <artifactId>trip-article-server</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <scope>provided</scope> <!-- 只在编译和测试生效，运行时不生效，阻止依赖的传递性 -->
+            <groupId>com.swx</groupId>
+            <artifactId>trip-article-api</artifactId>
         </dependency>
-        <!-- Redis模块 -->
+        <!-- 安全模块，做登陆拦截 -->
         <dependency>
             <groupId>com.swx</groupId>
-            <artifactId>trip-common-redis</artifactId>
+            <artifactId>trip-common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
     </dependencies>
+
 </project>
