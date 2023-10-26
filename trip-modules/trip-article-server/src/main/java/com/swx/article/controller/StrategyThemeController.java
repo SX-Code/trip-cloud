@@ -7,6 +7,8 @@ import com.swx.article.service.StrategyThemeService;
 import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/strategies/themes")
 public class StrategyThemeController {
@@ -25,6 +27,11 @@ public class StrategyThemeController {
     @GetMapping("/detail")
     public R<StrategyTheme> getById(Long id) {
         return R.ok(strategyThemeService.getById(id));
+    }
+
+    @GetMapping("/list")
+    public R<List<StrategyTheme>> listAll() {
+        return R.ok(strategyThemeService.list());
     }
 
     @PostMapping("/save")

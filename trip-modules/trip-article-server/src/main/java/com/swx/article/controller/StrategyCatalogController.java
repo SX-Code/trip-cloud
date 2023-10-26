@@ -5,8 +5,11 @@ import com.swx.article.domain.Destination;
 import com.swx.article.domain.StrategyCatalog;
 import com.swx.article.service.DestinationService;
 import com.swx.article.service.StrategyCatalogService;
+import com.swx.article.vo.StrategyCatalogGroup;
 import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/strategies/catalogs")
@@ -28,6 +31,11 @@ public class StrategyCatalogController {
     @GetMapping("/detail")
     public R<StrategyCatalog> getById(Long id) {
         return R.ok(strategyCatalogService.getById(id));
+    }
+
+    @GetMapping("/groups")
+    public R<List<StrategyCatalogGroup>> groupList() {
+        return R.ok(strategyCatalogService.findGroupList());
     }
 
     @PostMapping("/save")

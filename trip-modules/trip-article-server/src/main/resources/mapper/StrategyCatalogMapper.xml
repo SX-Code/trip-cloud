@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swx.article.mapper.StrategyCatalogMapper">
+
+    <resultMap id="BaseResultMap" type="com.swx.article.domain.StrategyCatalog">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="destId" column="dest_id" />
+        <result property="destName" column="dest_name" />
+        <result property="seq" column="seq" />
+        <result property="state" column="state" />
+    </resultMap>
+
+    <resultMap id="CatalogGroupMap" type="com.swx.article.vo.StrategyCatalogGroup">
+        <id property="destId" column="dest_id" />
+        <result property="destName" column="dest_name" />
+        <collection property="catalogList" resultMap="BaseResultMap" columnPrefix="sc_">
+
+        </collection>
+    </resultMap>
+
+    <select id="selectGroupList" resultMap="CatalogGroupMap">
+        SELECT t.dest_id,
+               t.dest_name,
+               sc.id sc_id,
+               sc.name sc_name,
+               sc.seq sc_seq,
+               sc.state sc_state
+        FROM (SELECT dest_id, dest_name
+              FROM strategy_catalog
+              GROUP BY dest_id, dest_name) t
+                 JOIN strategy_catalog sc ON t.dest_id = sc.dest_id
+        WHERE sc.state = 0
+    </select>
+</mapper>
