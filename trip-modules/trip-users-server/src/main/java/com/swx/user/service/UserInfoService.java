@@ -2,6 +2,7 @@ package com.swx.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.swx.user.domain.UserInfo;
+import com.swx.user.dto.UserInfoDTO;
 import com.swx.user.vo.RegisterRequest;
 
 import java.util.Map;
@@ -30,4 +31,6 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return {token, 用户}
      */
     Map<String, Object> login(String username, String password);
+
+    UserInfoDTO getDtoById(Long id);
 }

@@ -9,6 +9,7 @@ import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.service.TokenService;
 import com.swx.common.security.vo.LoginUser;
 import com.swx.user.domain.UserInfo;
+import com.swx.user.dto.UserInfoDTO;
 import com.swx.user.mapper.UserInfoMapper;
 import com.swx.user.redis.key.UserRedisKeyPrefix;
 import com.swx.user.service.UserInfoService;
@@ -104,6 +105,17 @@ public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> imple
         data.put("token", jwtToken);
         data.put("user", loginUserVo);
         return data;
+    }
+
+    @Override
+    public UserInfoDTO getDtoById(Long id) {
+        UserInfo userInfo = super.getById(id);
+        if (userInfo != null) {
+            UserInfoDTO userInfoDTO = new UserInfoDTO();
+            BeanUtils.copyProperties(userInfo, userInfoDTO);
+            return userInfoDTO;
+        }
+        return null;
     }
 
     /**
