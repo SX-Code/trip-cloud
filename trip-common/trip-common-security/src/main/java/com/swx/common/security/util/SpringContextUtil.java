@@ -1,4 +1,4 @@
-package com.swx.article.utils;
+package com.swx.common.security.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

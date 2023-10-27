@@ -6,6 +6,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.swx.common.security.util.SpringContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Base64Utils;

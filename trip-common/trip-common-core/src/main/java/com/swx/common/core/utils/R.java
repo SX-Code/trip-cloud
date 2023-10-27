@@ -1,5 +1,6 @@
 package com.swx.common.core.utils;
 
+import com.swx.common.core.exception.BizException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,6 +54,13 @@ public class R<T> {
 
     public static <T> R<T> noPermission() {
         return new R<>(403, "非法访问", null);
+    }
+
+    public T getAndCheck() {
+        if (this.code != CODE_SUCCESS) {
+            throw new BizException(code, msg);
+        }
+        return data;
     }
 
 }

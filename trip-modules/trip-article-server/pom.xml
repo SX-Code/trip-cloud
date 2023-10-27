@@ -20,13 +20,6 @@
         <dependency>
             <groupId>com.swx</groupId>
             <artifactId>trip-common-security</artifactId>
-            <exclusions>
-                <!-- article-api中已经有了，排除这个（可以不排除，因为版本一致） -->
-                <exclusion>
-                    <groupId>com.swx</groupId>
-                    <artifactId>trip-users-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
