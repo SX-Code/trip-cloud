@@ -25,5 +25,6 @@
                     </foreach>
             </if>
         </where>
+        ORDER BY c_id
     </select>
 </mapper>

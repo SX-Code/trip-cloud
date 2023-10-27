@@ -1,14 +1,18 @@
 package com.swx.article.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.swx.article.domain.*;
 import com.swx.article.mapper.StrategyContentMapper;
 import com.swx.article.mapper.StrategyMapper;
+import com.swx.article.qo.StrategyQuery;
 import com.swx.article.service.DestinationService;
 import com.swx.article.service.StrategyCatalogService;
 import com.swx.article.service.StrategyService;
 import com.swx.article.service.StrategyThemeService;
 import com.swx.article.utils.OssUtil;
+import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.exception.BizException;
 import com.swx.common.core.utils.R;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import org.springframework.util.StringUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -123,5 +128,93 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         content.setId(strategy.getId());
         int row = strategyContentMapper.updateById(content);
         return ret && row > 0;
+    }
+
+    /**
+     * 根据目的地ID，分组查询攻略分类下的攻略
+     *
+     * @param destId 目的地ID
+     * @return 分类及其下的攻略
+     */
+    @Override
+    public List<StrategyCatalog> findGroupsByDestId(Long destId) {
+        return baseMapper.selectGroupsByDestId(destId);
+    }
+
+    /**
+     * 根据攻略ID，返回攻略内容
+     *
+     * @param id 攻略ID
+     * @return 攻略内容
+     */
+    @Override
+    public StrategyContent getContentById(Long id) {
+        return strategyContentMapper.selectById(id);
+    }
+
+    /**
+     * 根据目的地ID，查询浏览量最高的前3篇攻略
+     *
+     * @param destId 目的地
+     * @return 浏览量最高的前3篇攻略
+     */
+    @Override
+    public List<Strategy> findViewnumTop3(Long destId) {
+        return super.list(Wrappers.<Strategy>lambdaQuery()
+                .eq(Strategy::getDestId, destId)
+                .orderByDesc(Strategy::getViewnum)
+                .last("limit 3")
+        );
+    }
+
+    /**
+     * 条件分页查询攻略
+     *
+     * @param query 查询条件
+     * @return 攻略
+     */
+    @Override
+    public Page<Strategy> pageStrategy(StrategyQuery query) {
+        // 兼容标签查询
+        if ((query.getType() != null && query.getType() != -1)&& (query.getRefid() != null && query.getRefid() != -1)) {
+            // 多条件标签筛选，目的地或者主题查询
+            if (query.getType() == StrategyQuery.CONDITION_THEME) {
+                query.setThemeId(query.getRefid());
+            } else {
+                query.setDestId(query.getRefid());
+            }
+        }
+
+        // 目的地和主题筛选
+        return super.page(
+                new Page<>(query.getCurrent(), query.getSize()),
+                Wrappers.<Strategy>lambdaQuery()
+                        .eq(query.getDestId() != null, Strategy::getDestId, query.getDestId())
+                        .eq(!Objects.isNull(query.getThemeId()), Strategy::getThemeId, query.getThemeId())
+                        .orderByDesc(query.getOrderBy() != null && query.getOrderBy().equals("viewnum"), Strategy::getViewnum)
+                        .orderByDesc(query.getOrderBy() != null && query.getOrderBy().equals("create_time"), Strategy::getCreateTime)
+
+        );
+    }
+
+    /**
+     * 查询目的地过滤条件
+     *
+     * @param abroad 是否国内
+     * @return 过滤条件
+     */
+    @Override
+    public List<StrategyCondition> findDestCondition(int abroad) {
+        return getBaseMapper().selectDestCondition(abroad);
+    }
+
+    /**
+     * 查询主题过滤条件
+     *
+     * @return 过滤条件
+     */
+    @Override
+    public List<StrategyCondition> findThemeCondition() {
+        return getBaseMapper().selectThemeCondition();
     }
 }

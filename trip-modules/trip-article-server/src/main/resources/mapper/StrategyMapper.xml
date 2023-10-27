@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swx.article.mapper.StrategyMapper">
+
+    <resultMap id="BaseResultMap" type="com.swx.article.domain.Strategy">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+    </resultMap>
+
+    <resultMap id="CatalogGroupMap" type="com.swx.article.domain.StrategyCatalog">
+        <id property="id" column="catalog_id" />
+        <result property="name" column="catalog_name" />
+        <collection property="strategies" resultMap="BaseResultMap" columnPrefix="s_">
+
+        </collection>
+    </resultMap>
+
+    <select id="selectGroupsByDestId" resultMap="CatalogGroupMap">
+        SELECT t.catalog_id,
+               t.catalog_name,
+               s.id    s_id,
+               s.title s_title
+        FROM (SELECT catalog_id, catalog_name
+              FROM strategy
+              WHERE dest_id = #{destId}
+              GROUP BY catalog_id, catalog_name) t
+                 JOIN strategy s ON t.catalog_id = s.catalog_id
+    </select>
+
+    <select id="selectDestCondition" resultType="com.swx.article.vo.StrategyCondition">
+        SELECT dest_id refid, dest_name name, count(*) total
+        FROM strategy
+        WHERE isabroad = #{abroad}
+        GROUP BY dest_id, dest_name
+        ORDER BY total DESC
+    </select>
+
+    <select id="selectThemeCondition" resultType="com.swx.article.vo.StrategyCondition">
+        SELECT theme_id refid, theme_name name, count(*) total
+        FROM strategy
+        GROUP BY theme_id, theme_name
+        ORDER BY total DESC
+    </select>
+</mapper>

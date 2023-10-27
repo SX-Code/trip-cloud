@@ -3,12 +3,20 @@ package com.swx.article.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.article.domain.Strategy;
+import com.swx.article.domain.StrategyCatalog;
+import com.swx.article.domain.StrategyContent;
+import com.swx.article.qo.StrategyQuery;
 import com.swx.article.service.StrategyService;
 import com.swx.article.utils.OssUtil;
+import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.utils.R;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/strategies")
@@ -21,13 +29,42 @@ public class StrategyController {
     }
 
     @GetMapping("/query")
-    public R<Page<Strategy>> pageList(Page<Strategy> page) {
-        return R.ok(strategyService.page(page));
+    public R<Page<Strategy>> pageList(StrategyQuery query) {
+        return R.ok(strategyService.pageStrategy(query));
     }
 
     @GetMapping("/detail")
     public R<Strategy> getById(Long id) {
         return R.ok(strategyService.getById(id));
+    }
+
+    @GetMapping("/conditions")
+    public R<Map<String, List<StrategyCondition>>> getConditions() {
+        Map<String, List<StrategyCondition>> result = new HashMap<>();
+        List<StrategyCondition> chinaCondition = strategyService.findDestCondition(Strategy.ABROAD_NO);
+        List<StrategyCondition> abroadCondition = strategyService.findDestCondition(Strategy.ABROAD_YES);
+        List<StrategyCondition> themeCondition = strategyService.findThemeCondition();
+
+        result.put("chinaCondition", chinaCondition);
+        result.put("abroadCondition", abroadCondition);
+        result.put("themeCondition", themeCondition);
+
+        return R.ok(result);
+    }
+
+    @GetMapping("/content")
+    public R<StrategyContent> getContentById(Long id) {
+        return R.ok(strategyService.getContentById(id));
+    }
+
+    @GetMapping("/groups")
+    public R<List<StrategyCatalog>> groupByCatalog(Long destId) {
+        return R.ok(strategyService.findGroupsByDestId(destId));
+    }
+
+    @GetMapping("/viewnumTop3")
+    public R<List<Strategy>> viewnumTop3(Long destId) {
+        return R.ok(strategyService.findViewnumTop3(destId));
     }
 
     @PostMapping("/uploadImg")
