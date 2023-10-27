@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.article.domain.Strategy;
 import com.swx.article.domain.StrategyCatalog;
 import com.swx.article.domain.StrategyContent;
+import com.swx.article.domain.StrategyRank;
 import com.swx.article.qo.StrategyQuery;
+import com.swx.article.service.StrategyRankService;
 import com.swx.article.service.StrategyService;
 import com.swx.article.utils.OssUtil;
 import com.swx.article.vo.StrategyCondition;
@@ -23,9 +25,11 @@ import java.util.Map;
 public class StrategyController {
 
     private final StrategyService strategyService;
+    private final StrategyRankService strategyRankService;
 
-    public StrategyController(StrategyService strategyService) {
+    public StrategyController(StrategyService strategyService, StrategyRankService strategyRankService) {
         this.strategyService = strategyService;
+        this.strategyRankService = strategyRankService;
     }
 
     @GetMapping("/query")
@@ -65,6 +69,18 @@ public class StrategyController {
     @GetMapping("/viewnumTop3")
     public R<List<Strategy>> viewnumTop3(Long destId) {
         return R.ok(strategyService.findViewnumTop3(destId));
+    }
+
+    @GetMapping("/ranks")
+    public R<JSONObject> ranks() {
+        List<StrategyRank> chinaRank = strategyRankService.selectLastRanksByType(StrategyRank.TYPE_CHINA);
+        List<StrategyRank> abroadRank = strategyRankService.selectLastRanksByType(StrategyRank.TYPE_CHINA);
+        List<StrategyRank> hotRank = strategyRankService.selectLastRanksByType(StrategyRank.TYPE_HOT);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("abroadRank", abroadRank);
+        jsonObject.put("chinaRank", chinaRank);
+        jsonObject.put("hotRank", hotRank);
+        return R.ok(jsonObject);
     }
 
     @PostMapping("/uploadImg")
