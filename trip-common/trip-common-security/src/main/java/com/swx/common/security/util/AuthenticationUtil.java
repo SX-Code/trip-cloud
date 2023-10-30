@@ -25,7 +25,7 @@ public class AuthenticationUtil {
 
     public static LoginUser getLoginUser() {
         String token = getToken();
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token) || token.equals("undefined")) {
             return null;
         }
         TokenService tokenService = SpringContextUtil.getBean(TokenService.class);

@@ -7,6 +7,5 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface StrategyRankMapper extends BaseMapper<StrategyRank> {
-
     int batchInsert(@Param("strategyRanks") List<StrategyRank> strategyRanks);
 }
