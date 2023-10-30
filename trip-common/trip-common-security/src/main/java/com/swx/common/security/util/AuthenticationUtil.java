@@ -10,6 +10,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationUtil {
+    private static final ThreadLocal<LoginUser> USER_HOLDER = new ThreadLocal<>();
 
     public static HttpServletRequest getRequest() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -23,12 +24,29 @@ public class AuthenticationUtil {
         return getRequest().getHeader(TokenService.TOKEN_HEADER);
     }
 
+    /**
+     * 从Token或者缓存中获取User
+     * @return 登陆用户
+     */
     public static LoginUser getLoginUser() {
+        LoginUser cacheUser = USER_HOLDER.get();
+        if (cacheUser != null) {
+            return cacheUser;
+        }
         String token = getToken();
         if (StringUtils.isEmpty(token) || token.equals("undefined")) {
             return null;
         }
         TokenService tokenService = SpringContextUtil.getBean(TokenService.class);
-        return tokenService.getLoginUser(token);
+        LoginUser loginUser = tokenService.getLoginUser(token);
+        USER_HOLDER.set(loginUser);
+        return loginUser;
+    }
+
+    /**
+     * 清空缓存中的User
+     */
+    public static void removeUser() {
+        USER_HOLDER.remove();
     }
 }

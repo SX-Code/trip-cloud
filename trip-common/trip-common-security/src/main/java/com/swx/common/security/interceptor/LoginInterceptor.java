@@ -3,11 +3,13 @@ package com.swx.common.security.interceptor;
 import com.swx.common.core.exception.BizException;
 import com.swx.common.security.annotation.RequireLogin;
 import com.swx.common.security.service.TokenService;
+import com.swx.common.security.util.AuthenticationUtil;
 import com.swx.common.security.vo.LoginUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,5 +57,12 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
         }
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        // 请求执行完成之后，准备响应之前
+        // 线程即将完成本次请求，将当前线程存储的数据清楚
+        AuthenticationUtil.removeUser();
     }
 }
