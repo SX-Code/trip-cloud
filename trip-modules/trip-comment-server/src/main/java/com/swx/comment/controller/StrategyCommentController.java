@@ -33,4 +33,11 @@ public class StrategyCommentController {
         strategyCommentService.save(strategyId, strategyTitle);
         return R.ok();
     }
+
+    @RequireLogin
+    @PostMapping("/likes")
+    public R<?> likes(String cid) {
+        strategyCommentService.doLike(cid);
+        return R.ok();
+    }
 }

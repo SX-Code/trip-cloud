@@ -19,4 +19,10 @@ public interface StrategyCommentService {
      * @param strategyTitle 攻略标题
      */
     void save(Long strategyId, String strategyTitle);
+
+    /**
+     * 点赞和取消点赞
+     * @param cid 评论ID
+     */
+    void doLike(String cid);
 }
