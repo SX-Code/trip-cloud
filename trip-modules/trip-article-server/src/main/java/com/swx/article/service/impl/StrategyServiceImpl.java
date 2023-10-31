@@ -21,15 +21,13 @@ import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.util.AuthenticationUtil;
 import com.swx.common.security.vo.LoginUser;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -42,7 +40,9 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     private final RedisService redisService;
     private final UserInfoFeignService userInfoFeignService;
 
-    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService, StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper, RedisService redisService, UserInfoFeignService userInfoFeignService) {
+    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService,
+                               StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper,
+                               RedisService redisService, @Lazy UserInfoFeignService userInfoFeignService) {
         this.strategyCatalogService = strategyCatalogService;
         this.destinationService = destinationService;
         this.strategyThemeService = strategyThemeService;
@@ -62,6 +62,15 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
             R<List<Long>> favoriteStrategyIdList = userInfoFeignService.getFavorStrategyIdList(loginUser.getId());
             List<Long> ids = favoriteStrategyIdList.checkAndGet();
             strategy.setFavorite(ids.contains(id));
+        }
+        // 从 redis 中查询最新的统计数据
+        Map<String, Object> statData = redisService.getCacheMap(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP.fullKey(id + ""));
+        if (statData != null) {
+            strategy.setViewnum((Integer) statData.get("viewnum"));
+            strategy.setReplynum((Integer) statData.get("replynum"));
+            strategy.setFavornum((Integer) statData.get("favornum"));
+            strategy.setSharenum((Integer) statData.get("sharenum"));
+            strategy.setThumbsupnum((Integer) statData.get("thumbsupnum"));
         }
         return strategy;
     }
@@ -258,6 +267,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         StrategyRedisKeyPrefix keyPrefix = StrategyRedisKeyPrefix.STRATEGIES_TOP_MAP;
         String key = keyPrefix.fullKey(sid + "");
         String hashKey = loginUser.getId() + "";
+        // TODO: 并发问题，查询和增加不是原子操作，锁 或者 lua 脚本
         Integer count = redisService.getCacheMapValue(key, hashKey);
         if (count != null && count > 0) {
             return false;
@@ -267,7 +277,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         keyPrefix.setUnit(TimeUnit.MILLISECONDS);
         redisService.hashIncrement(keyPrefix, hashKey, 1, sid + "");
         // 置顶数+1
-        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "thumbsnum", 1, sid + "");
+        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "thumbsupnum", 1, sid + "");
         return true;
     }
 }

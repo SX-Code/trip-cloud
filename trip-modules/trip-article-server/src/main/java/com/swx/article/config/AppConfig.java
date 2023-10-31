@@ -3,6 +3,7 @@ package com.swx.article.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -24,4 +25,10 @@ public class AppConfig {
         return new ThreadPoolExecutor(10, 50, 10, TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>(100));
     }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("-------------- @PostConstruct --------------");
+    }
+
 }
