@@ -39,6 +39,7 @@ public class StrategyController {
 
     @GetMapping("/detail")
     public R<Strategy> getById(Long id) {
+        strategyService.viewnumIncr(id);
         return R.ok(strategyService.getById(id));
     }
 

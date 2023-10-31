@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.swx.common.redis.key.KeyPrefix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -243,5 +244,17 @@ public class RedisService {
      */
     public Collection<String> keys(final String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 针对 hash key 进行 increment
+     *
+     * @param prefix    前缀
+     * @param hashKey hash key
+     * @param increment 自增量
+     * @param suffix    后缀
+     */
+    public void hashIncrement(KeyPrefix prefix, String hashKey, int increment, String... suffix) {
+        redisTemplate.opsForHash().increment(prefix.fullKey(suffix), hashKey, 1);
     }
 }

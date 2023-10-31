@@ -45,6 +45,7 @@ public interface StrategyService extends IService<Strategy> {
 
     /**
      * 查询目的地过滤条件
+     *
      * @param abroad 是否国内
      * @return 过滤条件
      */
@@ -52,7 +53,15 @@ public interface StrategyService extends IService<Strategy> {
 
     /**
      * 查询主题过滤条件
+     *
      * @return 过滤条件
      */
     List<StrategyCondition> findThemeCondition();
+
+    /**
+     * 增加阅读量
+     *
+     * @param id 攻略id
+     */
+    void viewnumIncr(Long id);
 }

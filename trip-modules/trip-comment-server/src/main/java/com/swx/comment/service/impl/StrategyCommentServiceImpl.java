@@ -1,10 +1,12 @@
 package com.swx.comment.service.impl;
 
 import com.swx.comment.domain.StrategyComment;
+import com.swx.comment.key.CommentRedisKeyPrefix;
 import com.swx.comment.qo.CommentQuery;
 import com.swx.comment.repository.StrategyCommentRepository;
 import com.swx.comment.service.StrategyCommentService;
 import com.swx.common.core.exception.BizException;
+import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.util.AuthenticationUtil;
 import com.swx.common.security.vo.LoginUser;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +26,12 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
 
     private final StrategyCommentRepository strategyCommentRepository;
     private final MongoTemplate mongoTemplate;
+    private final RedisService redisService;
 
-    public StrategyCommentServiceImpl(StrategyCommentRepository strategyCommentRepository, MongoTemplate mongoTemplate) {
+    public StrategyCommentServiceImpl(StrategyCommentRepository strategyCommentRepository, MongoTemplate mongoTemplate, RedisService redisService) {
         this.strategyCommentRepository = strategyCommentRepository;
         this.mongoTemplate = mongoTemplate;
+        this.redisService = redisService;
     }
 
     /**
@@ -112,5 +116,15 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
             // 重新将对象保存到 mongodb
             strategyCommentRepository.save(strategyComment);
         }
+    }
+
+    /**
+     * 评论数+1
+     *
+     * @param strategyId 攻略ID
+     */
+    @Override
+    public void replyNumIncr(Long strategyId) {
+        redisService.hashIncrement(CommentRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "replynum", 1, strategyId + "");
     }
 }

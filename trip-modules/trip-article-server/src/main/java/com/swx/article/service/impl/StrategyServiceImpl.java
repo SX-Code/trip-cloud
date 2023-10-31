@@ -7,6 +7,7 @@ import com.swx.article.domain.*;
 import com.swx.article.mapper.StrategyContentMapper;
 import com.swx.article.mapper.StrategyMapper;
 import com.swx.article.qo.StrategyQuery;
+import com.swx.article.redis.key.StrategyRedisKeyPrefix;
 import com.swx.article.service.DestinationService;
 import com.swx.article.service.StrategyCatalogService;
 import com.swx.article.service.StrategyService;
@@ -15,6 +16,7 @@ import com.swx.article.utils.OssUtil;
 import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.exception.BizException;
 import com.swx.common.core.utils.R;
+import com.swx.common.redis.service.RedisService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,12 +34,14 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     private final DestinationService destinationService;
     private final StrategyThemeService strategyThemeService;
     private final StrategyContentMapper strategyContentMapper;
+    private final RedisService redisService;
 
-    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService, StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper) {
+    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService, StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper, RedisService redisService) {
         this.strategyCatalogService = strategyCatalogService;
         this.destinationService = destinationService;
         this.strategyThemeService = strategyThemeService;
         this.strategyContentMapper = strategyContentMapper;
+        this.redisService = redisService;
     }
 
     @Override
@@ -216,5 +220,15 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     @Override
     public List<StrategyCondition> findThemeCondition() {
         return getBaseMapper().selectThemeCondition();
+    }
+
+    /**
+     * 增加阅读量
+     *
+     * @param id 攻略id
+     */
+    @Override
+    public void viewnumIncr(Long id) {
+        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "viewnum", 1, id + "");
     }
 }

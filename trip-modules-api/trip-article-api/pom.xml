@@ -21,6 +21,12 @@
             <groupId>com.swx</groupId>
             <artifactId>trip-users-api</artifactId>
         </dependency>
+        <!-- Redis模块 -->
+        <dependency>
+            <groupId>com.swx</groupId>
+            <artifactId>trip-common-redis</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

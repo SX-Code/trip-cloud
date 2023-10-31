@@ -31,6 +31,8 @@ public class StrategyCommentController {
     @PostMapping("/save")
     public R<?> saveComment(Long strategyId, String strategyTitle) {
         strategyCommentService.save(strategyId, strategyTitle);
+        // 评论数+1
+        strategyCommentService.replyNumIncr(strategyId);
         return R.ok();
     }
 
