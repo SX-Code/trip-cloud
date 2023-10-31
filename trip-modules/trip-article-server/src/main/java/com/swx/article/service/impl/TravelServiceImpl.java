@@ -52,7 +52,7 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel> impleme
 
         // 获取作者信息
         R<UserInfoDTO> result = userInfoFeignService.getById(travel.getAuthorId());
-        UserInfoDTO author = result.getAndCheck();
+        UserInfoDTO author = result.checkAndGet();
         travel.setAuthor(author);
 
         return travel;

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: comment-service
+  cloud:
+    nacos:
+      server-addr: 124.221.23.47:8848
+      config:
+        file-extension: yaml
+        namespace: trip_cloud_dev
+        shared-configs:
+          - data-id: redis-${spring.profiles.active}.yaml
+            refresh: true
+          - data-id: jwt-${spring.profiles.active}.yaml
+            refresh: true
+  profiles:
+    active: dev

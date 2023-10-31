@@ -5,24 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.swx</groupId>
-        <artifactId>trip_cloud</artifactId>
+        <artifactId>trip-modules</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>trip-modules-api</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>trip-comment-server</artifactId>
 
-    <description>所有微服务子模块 api 父模块，管理所有 api 模块所需的依赖</description>
-    <modules>
-        <module>trip-users-api</module>
-        <module>trip-article-api</module>
-        <module>trip-comment-api</module>
-    </modules>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.swx</groupId>
-            <artifactId>trip-common-core</artifactId>
+            <artifactId>trip-comment-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.swx</groupId>
+            <artifactId>trip-common-security</artifactId>
         </dependency>
     </dependencies>
 
