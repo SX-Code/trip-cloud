@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -91,5 +92,27 @@ public class TravelCommentServiceImpl implements TravelCommentService {
             comment.setType(TravelComment.TRAVLE_COMMENT_TYPE_COMMENT);
         }
         travelCommentRepository.save(comment);
+    }
+
+    /**
+     * 获取游记的评论
+     *
+     * @param travelId 游记ID
+     * @return 所有评论
+     */
+    @Override
+    public List<TravelComment> findList(Long travelId) {
+        Query query = new Query()
+                .with(Sort.by(Sort.Direction.DESC, "createTime"))
+                .addCriteria(Criteria.where("travelId").is(travelId));
+        List<TravelComment> travelComments = mongoTemplate.find(query, TravelComment.class);
+        for (TravelComment travelComment : travelComments) {
+            TravelComment refComment = travelComment.getRefComment();
+            if (refComment != null && refComment.getId() != null) {
+                Optional<TravelComment> refCommentOptional = travelCommentRepository.findById(refComment.getId());
+                travelComment.setRefComment(refCommentOptional.orElse(null));
+            }
+        }
+        return travelComments;
     }
 }

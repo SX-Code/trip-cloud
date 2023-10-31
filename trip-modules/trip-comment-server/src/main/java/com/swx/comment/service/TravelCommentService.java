@@ -4,6 +4,8 @@ import com.swx.comment.domain.TravelComment;
 import com.swx.comment.qo.CommentQuery;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface TravelCommentService {
 
     /**
@@ -18,4 +20,11 @@ public interface TravelCommentService {
      * @param comment 评论信息
      */
     void save(TravelComment comment);
+
+    /**
+     * 获取游记的评论
+     * @param travelId 游记ID
+     * @return 所有评论
+     */
+    List<TravelComment> findList(Long travelId);
 }
