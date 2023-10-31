@@ -4,11 +4,9 @@ import com.swx.common.core.utils.R;
 import com.swx.user.dto.UserInfoDTO;
 import com.swx.user.service.UserInfoService;
 import com.swx.user.vo.RegisterRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -41,5 +39,10 @@ public class UserInfoController {
     @GetMapping("/getById")
     public R<UserInfoDTO> getById(Long id) {
         return R.ok(userInfoService.getDtoById(id));
+    }
+
+    @GetMapping("/favor/strategies")
+    R<List<Long>> getFavorStrategyIdList(@RequestParam Long userId) {
+        return R.ok(userInfoService.getFavorStrategyIdList(userId));
     }
 }

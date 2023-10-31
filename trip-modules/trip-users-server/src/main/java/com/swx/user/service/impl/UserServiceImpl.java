@@ -19,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -116,6 +117,11 @@ public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> imple
             return userInfoDTO;
         }
         return null;
+    }
+
+    @Override
+    public List<Long> getFavorStrategyIdList(Long userId) {
+        return getBaseMapper().getFavorStrategyIdList(userId);
     }
 
     /**

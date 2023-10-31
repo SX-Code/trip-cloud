@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.swx.article.domain.*;
+import com.swx.article.feign.UserInfoFeignService;
 import com.swx.article.mapper.StrategyContentMapper;
 import com.swx.article.mapper.StrategyMapper;
 import com.swx.article.qo.StrategyQuery;
@@ -17,6 +18,8 @@ import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.exception.BizException;
 import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
+import com.swx.common.security.util.AuthenticationUtil;
+import com.swx.common.security.vo.LoginUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -35,13 +38,15 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     private final StrategyThemeService strategyThemeService;
     private final StrategyContentMapper strategyContentMapper;
     private final RedisService redisService;
+    private final UserInfoFeignService userInfoFeignService;
 
-    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService, StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper, RedisService redisService) {
+    public StrategyServiceImpl(StrategyCatalogService strategyCatalogService, DestinationService destinationService, StrategyThemeService strategyThemeService, StrategyContentMapper strategyContentMapper, RedisService redisService, UserInfoFeignService userInfoFeignService) {
         this.strategyCatalogService = strategyCatalogService;
         this.destinationService = destinationService;
         this.strategyThemeService = strategyThemeService;
         this.strategyContentMapper = strategyContentMapper;
         this.redisService = redisService;
+        this.userInfoFeignService = userInfoFeignService;
     }
 
     @Override
@@ -49,6 +54,13 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         Strategy strategy = super.getById(id);
         StrategyContent strategyContent = strategyContentMapper.selectById(id);
         strategy.setContent(strategyContent);
+        // 查询当前用户是否已收藏攻略
+        LoginUser loginUser = AuthenticationUtil.getLoginUser();
+        if (loginUser != null) {
+            R<List<Long>> favoriteStrategyIdList = userInfoFeignService.getFavorStrategyIdList(loginUser.getId());
+            List<Long> ids = favoriteStrategyIdList.checkAndGet();
+            strategy.setFavorite(ids.contains(id));
+        }
         return strategy;
     }
 

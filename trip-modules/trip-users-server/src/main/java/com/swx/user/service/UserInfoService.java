@@ -5,6 +5,7 @@ import com.swx.user.domain.UserInfo;
 import com.swx.user.dto.UserInfoDTO;
 import com.swx.user.vo.RegisterRequest;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserInfoService extends IService<UserInfo> {
@@ -33,4 +34,6 @@ public interface UserInfoService extends IService<UserInfo> {
     Map<String, Object> login(String username, String password);
 
     UserInfoDTO getDtoById(Long id);
+
+    List<Long> getFavorStrategyIdList(Long userId);
 }
