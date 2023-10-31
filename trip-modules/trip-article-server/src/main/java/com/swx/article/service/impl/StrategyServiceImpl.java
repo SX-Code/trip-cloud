@@ -280,4 +280,16 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "thumbsupnum", 1, sid + "");
         return true;
     }
+
+    /**
+     * 获取攻略统计数据
+     *
+     * @param sid 攻略ID
+     * @return 统计数据
+     */
+    @Override
+    public Map<String, Object> getStatData(Long id) {
+        // 从 redis 中查询最新的统计数据
+        return redisService.getCacheMap(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP.fullKey(id + ""));
+    }
 }

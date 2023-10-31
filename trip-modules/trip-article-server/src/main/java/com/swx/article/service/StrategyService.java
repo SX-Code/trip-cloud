@@ -9,6 +9,7 @@ import com.swx.article.qo.StrategyQuery;
 import com.swx.article.vo.StrategyCondition;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StrategyService extends IService<Strategy> {
     /**
@@ -72,4 +73,12 @@ public interface StrategyService extends IService<Strategy> {
      * @return 置顶状态
      */
     Boolean thumbnumIncr(Long sid);
+
+    /**
+     * 获取攻略统计数据
+     *
+     * @param sid 攻略ID
+     * @return 统计数据
+     */
+    Map<String, Object> getStatData(Long id);
 }

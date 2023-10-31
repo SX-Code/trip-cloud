@@ -79,6 +79,12 @@ public class StrategyController {
         return R.ok(strategyService.thumbnumIncr(sid));
     }
 
+    @RequireLogin
+    @GetMapping("/stat/data")
+    public R<Map<String, Object>> findStatData(Long id) {
+        return R.ok(strategyService.getStatData(id));
+    }
+
 
     @GetMapping("/ranks")
     public R<JSONObject> ranks() {
