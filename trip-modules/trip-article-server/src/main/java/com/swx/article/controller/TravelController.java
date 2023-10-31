@@ -29,6 +29,10 @@ public class TravelController {
         return R.ok(travelService.getById(id));
     }
 
+    @GetMapping("/viewnumTop3")
+    public R<List<Travel>> viewnumTop3(Long destId) {
+        return R.ok(travelService.findViewnumTop3(destId));
+    }
     @PostMapping("/save")
     public R<?> save(Travel travel) {
         travelService.save(travel);

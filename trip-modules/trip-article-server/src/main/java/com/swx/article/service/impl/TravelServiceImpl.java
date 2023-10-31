@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.swx.article.domain.Strategy;
 import com.swx.article.domain.Travel;
 import com.swx.article.domain.TravelContent;
 import com.swx.article.feign.UserInfoFeignService;
@@ -127,5 +128,20 @@ public class TravelServiceImpl extends ServiceImpl<TravelMapper, Travel> impleme
             e.printStackTrace();
         }
         return page;
+    }
+
+    /**
+     * 根据目的地ID，查询浏览量最高的前3篇游记
+     *
+     * @param destId 目的地
+     * @return 浏览量最高的前3篇游记
+     */
+    @Override
+    public List<Travel> findViewnumTop3(Long destId) {
+        return super.list(Wrappers.<Travel>lambdaQuery()
+                .eq(Travel::getDestId, destId)
+                .orderByDesc(Travel::getViewnum)
+                .last("limit 3")
+        );
     }
 }
