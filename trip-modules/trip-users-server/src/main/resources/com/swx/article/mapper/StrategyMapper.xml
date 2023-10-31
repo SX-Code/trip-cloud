@@ -5,4 +5,12 @@
     <select id="getFavorStrategyIdList" resultType="java.lang.Long">
         select strategy_id from user_favor_strategies where user_id = #{userId}
     </select>
+
+    <delete id="deleteFavorStrategy">
+        delete from user_favor_strategies where user_id = #{userId} and strategy_id = #{strategyId}
+    </delete>
+
+    <insert id="insertFavorStrategy">
+        insert into user_favor_strategies values(#{userId}, #{strategyId})
+    </insert>
 </mapper>

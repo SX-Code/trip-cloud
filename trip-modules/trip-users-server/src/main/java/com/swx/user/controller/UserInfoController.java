@@ -1,6 +1,7 @@
 package com.swx.user.controller;
 
 import com.swx.common.core.utils.R;
+import com.swx.common.security.annotation.RequireLogin;
 import com.swx.user.dto.UserInfoDTO;
 import com.swx.user.service.UserInfoService;
 import com.swx.user.vo.RegisterRequest;
@@ -44,5 +45,11 @@ public class UserInfoController {
     @GetMapping("/favor/strategies")
     R<List<Long>> getFavorStrategyIdList(@RequestParam Long userId) {
         return R.ok(userInfoService.getFavorStrategyIdList(userId));
+    }
+
+    @RequireLogin
+    @PostMapping("/favor/strategies")
+    public R<Boolean> favoriteStrategy(Long sid) {
+        return R.ok(userInfoService.favoriteStrategy(sid));
     }
 }

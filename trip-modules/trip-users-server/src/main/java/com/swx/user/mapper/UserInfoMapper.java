@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
     List<Long> getFavorStrategyIdList(@Param("userId") Long userId);
+
+    Boolean deleteFavorStrategy(@Param("userId") Long userId, @Param("strategyId") Long strategyId);
+
+    Boolean insertFavorStrategy(@Param("userId") Long userId, @Param("strategyId") Long strategyId);
 }

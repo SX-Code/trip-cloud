@@ -36,4 +36,11 @@ public interface UserInfoService extends IService<UserInfo> {
     UserInfoDTO getDtoById(Long id);
 
     List<Long> getFavorStrategyIdList(Long userId);
+
+    /**
+     * 收藏攻略
+     * @param sid 攻略ID
+     * @return 收藏状态
+     */
+    Boolean favoriteStrategy(Long sid);
 }

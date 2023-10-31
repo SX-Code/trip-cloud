@@ -7,6 +7,7 @@ import com.swx.common.core.utils.Md5Utils;
 import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.service.TokenService;
+import com.swx.common.security.util.AuthenticationUtil;
 import com.swx.common.security.vo.LoginUser;
 import com.swx.user.domain.UserInfo;
 import com.swx.user.dto.UserInfoDTO;
@@ -125,7 +126,26 @@ public class UserServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> imple
     }
 
     /**
+     * 收藏攻略
+     *
+     * @param sid 攻略ID
+     * @return 收藏状态
+     */
+    @Override
+    public Boolean favoriteStrategy(Long sid) {
+        LoginUser loginUser = AuthenticationUtil.getLoginUser();
+        List<Long> ids = this.getFavorStrategyIdList(loginUser.getId());
+        if (ids.contains(sid)) {
+            redisService.hashIncrement(UserRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "favornum", -1, sid + "");
+            return getBaseMapper().deleteFavorStrategy(loginUser.getId(), sid);
+        }
+        redisService.hashIncrement(UserRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "favornum", 1, sid + "");
+        return getBaseMapper().insertFavorStrategy(loginUser.getId(), sid);
+    }
+
+    /**
      * 构建用户对象
+     *
      * @param req 请求对象参数
      * @return 用户对象
      */
