@@ -64,4 +64,12 @@ public interface StrategyService extends IService<Strategy> {
      * @param id 攻略id
      */
     void viewnumIncr(Long id);
+
+    /**
+     * 攻略置顶，一个用户一天只能置顶一篇攻略
+     *
+     * @param sid 攻略ID
+     * @return 置顶状态
+     */
+    Boolean thumbnumIncr(Long sid);
 }

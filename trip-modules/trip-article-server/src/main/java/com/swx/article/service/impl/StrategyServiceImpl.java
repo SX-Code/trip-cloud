@@ -16,6 +16,7 @@ import com.swx.article.service.StrategyThemeService;
 import com.swx.article.utils.OssUtil;
 import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.exception.BizException;
+import com.swx.common.core.utils.DateUtils;
 import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
 import com.swx.common.security.util.AuthenticationUtil;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> implements StrategyService {
@@ -192,7 +194,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     @Override
     public Page<Strategy> pageStrategy(StrategyQuery query) {
         // 兼容标签查询
-        if ((query.getType() != null && query.getType() != -1)&& (query.getRefid() != null && query.getRefid() != -1)) {
+        if ((query.getType() != null && query.getType() != -1) && (query.getRefid() != null && query.getRefid() != -1)) {
             // 多条件标签筛选，目的地或者主题查询
             if (query.getType() == StrategyQuery.CONDITION_THEME) {
                 query.setThemeId(query.getRefid());
@@ -242,5 +244,30 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
     @Override
     public void viewnumIncr(Long id) {
         redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "viewnum", 1, id + "");
+    }
+
+    /**
+     * 攻略置顶，一个用户一天只能置顶一篇攻略
+     *
+     * @param sid 攻略ID
+     * @return 置顶状态
+     */
+    @Override
+    public Boolean thumbnumIncr(Long sid) {
+        LoginUser loginUser = AuthenticationUtil.getLoginUser();
+        StrategyRedisKeyPrefix keyPrefix = StrategyRedisKeyPrefix.STRATEGIES_TOP_MAP;
+        String key = keyPrefix.fullKey(sid + "");
+        String hashKey = loginUser.getId() + "";
+        Integer count = redisService.getCacheMapValue(key, hashKey);
+        if (count != null && count > 0) {
+            return false;
+        }
+        // 记录用户的置顶，向攻略map中添加该用户的置顶，并设置攻略置顶map的过期时间
+        keyPrefix.setTimeout(DateUtils.getLastMillisSeconds());
+        keyPrefix.setUnit(TimeUnit.MILLISECONDS);
+        redisService.hashIncrement(keyPrefix, hashKey, 1, sid + "");
+        // 置顶数+1
+        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "thumbsnum", 1, sid + "");
+        return true;
     }
 }

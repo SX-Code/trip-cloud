@@ -250,11 +250,15 @@ public class RedisService {
      * 针对 hash key 进行 increment
      *
      * @param prefix    前缀
-     * @param hashKey hash key
+     * @param hashKey   hash key
      * @param increment 自增量
      * @param suffix    后缀
      */
     public void hashIncrement(KeyPrefix prefix, String hashKey, int increment, String... suffix) {
-        redisTemplate.opsForHash().increment(prefix.fullKey(suffix), hashKey, 1);
+        Long ret = redisTemplate.opsForHash().increment(prefix.fullKey(suffix), hashKey, 1);
+        if (prefix.getTimeout() != null && prefix.getTimeout() > 0 && ret == 1) {
+            // 有过期时间，且第一次则设置过期时间，给map设置过期时间
+            expire(prefix.fullKey(suffix), prefix.getTimeout(), prefix.getUnit());
+        }
     }
 }

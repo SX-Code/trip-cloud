@@ -12,6 +12,7 @@ import com.swx.article.service.StrategyService;
 import com.swx.article.utils.OssUtil;
 import com.swx.article.vo.StrategyCondition;
 import com.swx.common.core.utils.R;
+import com.swx.common.security.annotation.RequireLogin;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,13 @@ public class StrategyController {
     public R<List<Strategy>> viewnumTop3(Long destId) {
         return R.ok(strategyService.findViewnumTop3(destId));
     }
+
+    @RequireLogin
+    @GetMapping("/thumbnumIncr")
+    public R<Boolean> thumbnumIncr(Long sid) {
+        return R.ok(strategyService.thumbnumIncr(sid));
+    }
+
 
     @GetMapping("/ranks")
     public R<JSONObject> ranks() {
