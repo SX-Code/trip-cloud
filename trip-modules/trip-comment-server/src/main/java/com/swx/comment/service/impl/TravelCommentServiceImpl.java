@@ -4,8 +4,13 @@ import com.swx.comment.domain.StrategyComment;
 import com.swx.comment.domain.TravelComment;
 import com.swx.comment.qo.CommentQuery;
 import com.swx.comment.repository.StrategyCommentRepository;
+import com.swx.comment.repository.TravelCommentRepository;
 import com.swx.comment.service.StrategyCommentService;
 import com.swx.comment.service.TravelCommentService;
+import com.swx.common.core.exception.BizException;
+import com.swx.common.security.util.AuthenticationUtil;
+import com.swx.common.security.vo.LoginUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -14,17 +19,20 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class TravelCommentServiceImpl implements TravelCommentService {
 
-    private final StrategyCommentRepository strategyCommentRepository;
+    private final TravelCommentRepository travelCommentRepository;
     private final MongoTemplate mongoTemplate;
 
-    public TravelCommentServiceImpl(StrategyCommentRepository strategyCommentRepository, MongoTemplate mongoTemplate) {
-        this.strategyCommentRepository = strategyCommentRepository;
+    public TravelCommentServiceImpl(TravelCommentRepository travelCommentRepository, MongoTemplate mongoTemplate) {
+        this.travelCommentRepository = travelCommentRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -54,5 +62,34 @@ public class TravelCommentServiceImpl implements TravelCommentService {
         // 查询数据
         List<TravelComment> records = mongoTemplate.find(query, TravelComment.class);
         return new PageImpl<>(records, request, total);
+    }
+
+    /**
+     * 保存游记评论
+     *
+     * @param comment 评论信息
+     */
+    @Override
+    public void save(TravelComment comment) {
+        // 获取当前登陆用户
+        LoginUser loginUser = AuthenticationUtil.getLoginUser();
+        if (loginUser == null) {
+            log.error("[游记评论模块] 获取登陆用户信息错误");
+            throw new BizException("获取登陆用户信息错误");
+        }
+        comment.setUserId(loginUser.getId());
+        comment.setNickname(loginUser.getNickname());
+        comment.setCity(loginUser.getCity());
+        comment.setLevel(loginUser.getLevel());
+        comment.setHeadImgUrl(loginUser.getHeadImgUrl());
+        comment.setCreateTime(new Date());
+        if (comment.getRefComment() != null && StringUtils.hasLength(comment.getRefComment().getId())) {
+            // 评论的评论
+            comment.setType(TravelComment.TRAVLE_COMMENT_TYPE);
+        } else {
+            // 普通评论
+            comment.setType(TravelComment.TRAVLE_COMMENT_TYPE_COMMENT);
+        }
+        travelCommentRepository.save(comment);
     }
 }

@@ -12,4 +12,10 @@ public interface TravelCommentService {
      * @return 评论
      */
     Page<TravelComment> page(CommentQuery qo);
+
+    /**
+     * 保存游记评论
+     * @param comment 评论信息
+     */
+    void save(TravelComment comment);
 }
