@@ -55,8 +55,7 @@ public class R<T> {
     public static <T> R<T> noPermission() {
         return new R<>(403, "非法访问", null);
     }
-
-    public T getAndCheck() {
+    public T checkAndGet() {
         if (this.code != CODE_SUCCESS) {
             throw new BizException(code, msg);
         }
