@@ -16,6 +16,7 @@
         <module>trip-article-server</module>
         <module>trip-data-server</module>
         <module>trip-comment-server</module>
+        <module>trip-search-service</module>
     </modules>
 
     <description>所有微服务子模块的依赖管理</description>

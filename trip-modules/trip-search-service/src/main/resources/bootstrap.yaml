@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: search-service
+  cloud:
+    nacos:
+      server-addr: 124.221.23.47:8848
+      config:
+        file-extension: yaml
+        namespace: trip_cloud_dev
+  profiles:
+    active: dev
