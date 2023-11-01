@@ -1,4 +1,4 @@
-package com.swx.data.service;
+package com.swx.data.job;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.swx.article.domain.Strategy;
@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;

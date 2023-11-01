@@ -24,6 +24,10 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.swx</groupId>
+            <artifactId>trip-common-redis</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

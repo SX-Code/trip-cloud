@@ -261,4 +261,31 @@ public class RedisService {
             expire(prefix.fullKey(suffix), prefix.getTimeout(), prefix.getUnit());
         }
     }
+
+    /**
+     * 针对 zset 成员进行增加分数
+     *
+     * @param prefix    前缀
+     * @param increment 增加的值
+     * @param member    成员
+     */
+    public void zsetIncrement(KeyPrefix prefix, double increment, Object member, String... suffix) {
+        redisTemplate.opsForZSet().incrementScore(prefix.fullKey(suffix), member, increment);
+    }
+
+    /**
+     * 按照指定分数范围获取 zset 集合中元素
+     *
+     * @param prefix 前缀
+     * @param start  开始分数
+     * @param end    结束分数
+     * @return zset 集合中元素
+     */
+    public <T> Set<T> zsetRerange(KeyPrefix prefix, int start, int end, String... suffix) {
+        return redisTemplate.opsForZSet().reverseRange(prefix, start, end);
+    }
+
+    public void zsetRemoveRange(KeyPrefix prefix, int min, int max, String... suffix) {
+        redisTemplate.opsForZSet().removeRangeByScore(prefix.fullKey(suffix), min, max);
+    }
 }

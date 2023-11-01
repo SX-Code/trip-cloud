@@ -252,7 +252,7 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
      */
     @Override
     public void viewnumIncr(Long id) {
-        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "viewnum", 1, id + "");
+        this.statDataIncr("viewnum", id);
     }
 
     /**
@@ -277,14 +277,25 @@ public class StrategyServiceImpl extends ServiceImpl<StrategyMapper, Strategy> i
         keyPrefix.setUnit(TimeUnit.MILLISECONDS);
         redisService.hashIncrement(keyPrefix, hashKey, 1, sid + "");
         // 置顶数+1
-        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, "thumbsupnum", 1, sid + "");
+        this.statDataIncr("thumbsupnum", sid);
         return true;
     }
 
     /**
+     * hashKey 对应的 value 自增
+     * @param hashKey hash key
+     * @param sid 攻略id
+     */
+    private void statDataIncr(String hashKey, Long sid) {
+        redisService.hashIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, hashKey, 1, sid + "");
+        redisService.zsetIncrement(StrategyRedisKeyPrefix.STRATEGIES_STAT_DATA_MAP, 1, sid + "");
+    }
+
+
+    /**
      * 获取攻略统计数据
      *
-     * @param sid 攻略ID
+     * @param id 攻略ID
      * @return 统计数据
      */
     @Override

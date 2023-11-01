@@ -77,7 +77,7 @@ public interface StrategyService extends IService<Strategy> {
     /**
      * 获取攻略统计数据
      *
-     * @param sid 攻略ID
+     * @param id 攻略ID
      * @return 统计数据
      */
     Map<String, Object> getStatData(Long id);
