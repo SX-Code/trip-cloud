@@ -38,6 +38,11 @@ public class DestinationController {
         return R.ok(destinationService.list(Wrappers.<Destination>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
     }
 
+    @GetMapping("/getByName")
+    public R<Destination> getDestByName(@RequestParam String name) {
+        return R.ok(destinationService.getOne(Wrappers.<Destination>lambdaQuery().eq(Destination::getName, name)));
+    }
+
     @GetMapping("/detail")
     public R<Destination> getById(Long id) {
         return R.ok(destinationService.getById(id));

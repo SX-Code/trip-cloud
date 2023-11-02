@@ -1,8 +1,11 @@
 package com.swx.search.feign;
 
+import com.swx.article.dto.TravelDTO;
 import com.swx.common.core.utils.R;
+import com.swx.user.dto.UserInfoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -16,4 +19,7 @@ public interface UserInfoFeignService {
      */
     @GetMapping("/users/")
     R<List<Object>> findList(@RequestParam Integer current, @RequestParam Integer limit);
+
+    @GetMapping("/users/findByDestName")
+    public R<List<UserInfoDTO>> findUserByDestName(@RequestParam String destName);
 }

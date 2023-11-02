@@ -24,7 +24,7 @@ public class UserInfoController {
     }
 
     @GetMapping("/phone/exists")
-    public R<Boolean> checkExists(String phone){
+    public R<Boolean> checkExists(String phone) {
         return R.ok(userInfoService.findByPhone(phone) != null);
     }
 
@@ -51,6 +51,13 @@ public class UserInfoController {
         List<UserInfo> list = userInfoService.list(Wrappers.<UserInfo>query().last("limit " + offset + ", " + limit));
         List<UserInfoDTO> dtoList = list.stream().map(UserInfo::toDto).collect(Collectors.toList());
         return R.ok(dtoList);
+    }
+
+    @GetMapping("/findByDestName")
+    public R<List<UserInfo>> findUserByDestName(@RequestParam String destName) {
+        return R.ok(userInfoService.list(Wrappers.<UserInfo>lambdaQuery()
+                .eq(UserInfo::getCity, destName)
+                .eq(UserInfo::getState, UserInfo.STATE_NORMAL)));
     }
 
     @GetMapping("/favor/strategies")

@@ -37,6 +37,13 @@ public class TravelController {
         return R.ok(travelService.list(Wrappers.<Travel>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
     }
 
+    @GetMapping("/findByDestName")
+    public R<List<Travel>> findTravelByDestName(@RequestParam String destName) {
+        return R.ok(travelService.list(Wrappers.<Travel>lambdaQuery()
+                .eq(Travel::getDestName, destName)
+                .eq(Travel::getState, Travel.STATE_RELEASE)));
+    }
+
     @GetMapping("/viewnumTop3")
     public R<List<Travel>> viewnumTop3(Long destId) {
         return R.ok(travelService.findViewnumTop3(destId));

@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.article.domain.*;
+import com.swx.article.dto.StrategyDTO;
 import com.swx.article.qo.StrategyQuery;
 import com.swx.article.service.StrategyRankService;
 import com.swx.article.service.StrategyService;
@@ -46,6 +47,13 @@ public class StrategyController {
     @PostMapping("/search")
     public R<List<Strategy>> forSearchService(@RequestBody QueryObject qo) {
         return R.ok(strategyService.list(Wrappers.<Strategy>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
+    }
+
+    @GetMapping("/findByDestName")
+    public R<List<Strategy>> findStrategyByDestName(@RequestParam String destName) {
+        return R.ok(strategyService.list(Wrappers.<Strategy>lambdaQuery()
+                .eq(Strategy::getDestName, destName)
+                .eq(Strategy::getState, Strategy.STATE_PUBLISH)));
     }
 
     @GetMapping("/conditions")
