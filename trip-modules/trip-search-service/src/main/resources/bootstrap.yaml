@@ -7,5 +7,8 @@ spring:
       config:
         file-extension: yaml
         namespace: trip_cloud_dev
+        shared-configs:
+          - data-id: redis-${spring.profiles.active}.yaml
+            refresh: true
   profiles:
     active: dev

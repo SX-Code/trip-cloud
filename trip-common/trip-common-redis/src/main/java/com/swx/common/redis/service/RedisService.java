@@ -288,4 +288,8 @@ public class RedisService {
     public void zsetRemoveRange(KeyPrefix prefix, int min, int max, String... suffix) {
         redisTemplate.opsForZSet().removeRangeByScore(prefix.fullKey(suffix), min, max);
     }
+
+    public Boolean setnx(String key, String value) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value);
+    }
 }

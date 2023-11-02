@@ -3,6 +3,7 @@ package com.swx.user.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.swx.user.dto.UserInfoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,4 +30,18 @@ public class UserInfo {
     private String headImgUrl; // 头像
     private String info; // 个性签名
     private Integer state = STATE_NORMAL; // 状态
+
+    public UserInfoDTO toDto() {
+        UserInfoDTO dto = new UserInfoDTO();
+        dto.setCity(this.getCity());
+        dto.setInfo(this.getInfo());
+        dto.setId(this.getId());
+        dto.setGender(this.getGender());
+        dto.setEmail(this.getEmail());
+        dto.setLevel(this.getLevel());
+        dto.setHeadImgUrl(this.getHeadImgUrl());
+        dto.setPhone(this.getPhone());
+        dto.setNickname(this.getNickname());
+        return dto;
+    }
 }

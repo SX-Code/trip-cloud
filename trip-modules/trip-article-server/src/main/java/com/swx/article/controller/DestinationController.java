@@ -1,10 +1,13 @@
 package com.swx.article.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.swx.article.domain.Destination;
 import com.swx.article.domain.Region;
+import com.swx.article.dto.DestinationDTO;
 import com.swx.article.qo.DestinationQuery;
 import com.swx.article.service.DestinationService;
+import com.swx.common.core.qo.QueryObject;
 import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,11 @@ public class DestinationController {
     @GetMapping("/list")
     public R<List<Destination>> listAll() {
         return R.ok(destinationService.list());
+    }
+
+    @PostMapping("/search")
+    public R<List<Destination>> forSearchService(@RequestBody QueryObject qo) {
+        return R.ok(destinationService.list(Wrappers.<Destination>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
     }
 
     @GetMapping("/detail")

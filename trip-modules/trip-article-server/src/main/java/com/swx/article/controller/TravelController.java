@@ -1,9 +1,12 @@
 package com.swx.article.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.swx.article.domain.Strategy;
 import com.swx.article.domain.Travel;
 import com.swx.article.qo.TravelQuery;
 import com.swx.article.service.TravelService;
+import com.swx.common.core.qo.QueryObject;
 import com.swx.common.core.utils.R;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,11 @@ public class TravelController {
     @GetMapping("/detail")
     public R<Travel> getById(Long id) {
         return R.ok(travelService.getById(id));
+    }
+
+    @PostMapping("/search")
+    public R<List<Travel>> forSearchService(@RequestBody QueryObject qo) {
+        return R.ok(travelService.list(Wrappers.<Travel>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
     }
 
     @GetMapping("/viewnumTop3")

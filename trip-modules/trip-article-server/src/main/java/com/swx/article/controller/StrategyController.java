@@ -1,16 +1,15 @@
 package com.swx.article.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.swx.article.domain.Strategy;
-import com.swx.article.domain.StrategyCatalog;
-import com.swx.article.domain.StrategyContent;
-import com.swx.article.domain.StrategyRank;
+import com.swx.article.domain.*;
 import com.swx.article.qo.StrategyQuery;
 import com.swx.article.service.StrategyRankService;
 import com.swx.article.service.StrategyService;
 import com.swx.article.utils.OssUtil;
 import com.swx.article.vo.StrategyCondition;
+import com.swx.common.core.qo.QueryObject;
 import com.swx.common.core.utils.R;
 import com.swx.common.security.annotation.RequireLogin;
 import org.springframework.util.StringUtils;
@@ -42,6 +41,11 @@ public class StrategyController {
     public R<Strategy> getById(Long id) {
         strategyService.viewnumIncr(id);
         return R.ok(strategyService.getById(id));
+    }
+
+    @PostMapping("/search")
+    public R<List<Strategy>> forSearchService(@RequestBody QueryObject qo) {
+        return R.ok(strategyService.list(Wrappers.<Strategy>query().last("limit " + qo.getOffset() + ", " + qo.getSize())));
     }
 
     @GetMapping("/conditions")
