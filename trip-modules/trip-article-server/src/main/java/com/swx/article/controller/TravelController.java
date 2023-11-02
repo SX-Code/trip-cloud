@@ -28,8 +28,13 @@ public class TravelController {
     }
 
     @GetMapping("/detail")
-    public R<Travel> getById(Long id) {
+    public R<Travel> detail(Long id) {
         return R.ok(travelService.getById(id));
+    }
+
+    @GetMapping("/getById")
+    public R<Travel> getById(Long id) {
+        return R.ok(travelService.getOne(Wrappers.<Travel>lambdaQuery().eq(Travel::getId, id)));
     }
 
     @PostMapping("/search")

@@ -86,10 +86,10 @@ public class ElasticsearchDataInitController {
         DATA_HANDLER_STRATEGY_MAP.put(INIT_STRATEGY, strategyInit);
 
         EsDataInitStrategy travelInit = new EsDataInitStrategy(articleFeignService::travelSearch, TravelEs.class);
-        DATA_HANDLER_STRATEGY_MAP.put(INIT_TRAVEL, strategyInit);
+        DATA_HANDLER_STRATEGY_MAP.put(INIT_TRAVEL, travelInit);
 
         EsDataInitStrategy destinationInit = new EsDataInitStrategy(articleFeignService::destinationSearch, DestinationEs.class);
-        DATA_HANDLER_STRATEGY_MAP.put(INIT_DESTINATION, strategyInit);
+        DATA_HANDLER_STRATEGY_MAP.put(INIT_DESTINATION, destinationInit);
     }
 
     @GetMapping("/{key}/{type}")
@@ -103,7 +103,7 @@ public class ElasticsearchDataInitController {
         String redisKey = "es:init:" + key + type;
         Boolean ret = redisService.setnx(redisKey, "initialized");
         if (ret == null || !ret) {
-            log.warn("[ES 数据初始化] 非法操作，已初始化, redisKey={}, ret={}", redisKey, ret);
+            log.warn("[ES 数据初始化] 非法操作，已初始化过, redisKey={}, ret={}", redisKey, ret);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -114,7 +114,6 @@ public class ElasticsearchDataInitController {
     }
 
     private void doInit(String type) {
-        List<Object> dataList = null;
         int current = 1;
         do {
             List<Object> list = handleRemoteDataList(current++, type);
@@ -122,7 +121,7 @@ public class ElasticsearchDataInitController {
                 log.info("[ES 数据初始化] 数据初始化完成.");
                 return;
             }
-            elasticsearchService.save(dataList);
+            elasticsearchService.save(list);
         } while (true);
 
     }

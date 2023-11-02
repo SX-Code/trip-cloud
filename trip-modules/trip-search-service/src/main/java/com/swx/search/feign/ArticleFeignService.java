@@ -20,14 +20,20 @@ public interface ArticleFeignService {
     public R<List<Object>> destinationSearch(@RequestBody QueryObject qo);
     @GetMapping("/destinations/getByName")
     public R<DestinationDTO> getDestByName(@RequestParam String name);
+    @GetMapping("/destinations/detail")
+    public DestinationDTO getDestById(@RequestParam String id);
 
     @PostMapping("/strategies/search")
     public R<List<Object>> strategySearch(@RequestBody QueryObject qo);
     @GetMapping("/strategies/findByDestName")
     public R<List<StrategyDTO>> findStrategyByDestName(@RequestParam String destName);
+    @GetMapping("/strategies/getById")
+    public StrategyDTO getStrategyById(@RequestParam String id);
 
     @PostMapping("/travels/search")
     public R<List<Object>> travelSearch(@RequestBody QueryObject qo);
     @GetMapping("/travels/findByDestName")
     public R<List<TravelDTO>> findTravelByDestName(@RequestParam String destName);
+    @GetMapping("/travels/getById")
+    R<TravelDTO> getTravelById(@RequestParam String id);
 }

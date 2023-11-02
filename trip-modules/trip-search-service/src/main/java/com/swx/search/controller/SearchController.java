@@ -5,11 +5,17 @@ import com.swx.article.dto.DestinationDTO;
 import com.swx.article.dto.StrategyDTO;
 import com.swx.article.dto.TravelDTO;
 import com.swx.common.core.utils.R;
+import com.swx.search.DestinationEs;
+import com.swx.search.StrategyEs;
+import com.swx.search.TravelEs;
+import com.swx.search.UserInfoEs;
 import com.swx.search.feign.ArticleFeignService;
 import com.swx.search.feign.UserInfoFeignService;
 import com.swx.search.qo.SearchQueryObject;
+import com.swx.search.service.ElasticsearchService;
 import com.swx.search.vo.SearchResult;
 import com.swx.user.dto.UserInfoDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +29,12 @@ import java.util.List;
 public class SearchController {
     private final ArticleFeignService articleFeignService;
     private final UserInfoFeignService userInfoFeignService;
+    private final ElasticsearchService elasticsearchService;
 
-    public SearchController(ArticleFeignService articleFeignService, UserInfoFeignService userInfoFeignService) {
+    public SearchController(ArticleFeignService articleFeignService, UserInfoFeignService userInfoFeignService, ElasticsearchService elasticsearchService) {
         this.articleFeignService = articleFeignService;
         this.userInfoFeignService = userInfoFeignService;
+        this.elasticsearchService = elasticsearchService;
     }
 
     @GetMapping
@@ -53,19 +61,58 @@ public class SearchController {
     }
 
     private R<?> searchForUserInfo(SearchQueryObject qo) {
-        return null;
+        Page<UserInfoDTO> page = elasticsearchService.searchWithHighlight(UserInfoEs.class, UserInfoDTO.class, qo,
+                (clazz, id) -> userInfoFeignService.getById(id).checkAndGet(), "city", "info");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("qo", qo);
+        jsonObject.put("page", page);
+        return R.ok(jsonObject);
     }
 
     private R<?> searchForAll(SearchQueryObject qo) {
-        return null;
+        SearchResult result = new SearchResult();
+        Page<UserInfoDTO> userPage = elasticsearchService.searchWithHighlight(UserInfoEs.class, UserInfoDTO.class, qo,
+                (clazz, id) -> userInfoFeignService.getById(id).checkAndGet(), "city", "info");
+        result.setUsers(userPage.getContent());
+        result.setTotal(userPage.getTotalElements());
+
+        Page<TravelDTO> travelPage = elasticsearchService.searchWithHighlight(TravelEs.class, TravelDTO.class, qo,
+                (clazz, id) -> articleFeignService.getTravelById(id).checkAndGet(), "title", "summary");
+        result.setTravels(travelPage.getContent());
+        result.setTotal(result.getTotal() + travelPage.getTotalElements());
+
+        Page<StrategyDTO> strategyPage = elasticsearchService.searchWithHighlight(StrategyEs.class, StrategyDTO.class, qo,
+                (clazz, id) -> articleFeignService.getStrategyById(id), "title", "subtitle", "summary");
+        result.setStrategies(strategyPage.getContent());
+        result.setTotal(result.getTotal() + strategyPage.getTotalElements());
+
+        Page<DestinationDTO> destPage = elasticsearchService.searchWithHighlight(DestinationEs.class, DestinationDTO.class, qo,
+                (clazz, id) -> articleFeignService.getDestById(id), "name", "info");
+        result.setDests(destPage.getContent());
+        result.setTotal(result.getTotal() + destPage.getTotalElements());
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("result", result);
+        jsonObject.put("qo", qo);
+        return R.ok(jsonObject);
     }
 
     private R<?> searchForTravel(SearchQueryObject qo) {
-        return null;
+        Page<TravelDTO> page = elasticsearchService.searchWithHighlight(TravelEs.class, TravelDTO.class, qo,
+                (clazz, id) -> articleFeignService.getTravelById(id).checkAndGet(), "title", "summary");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("qo", qo);
+        jsonObject.put("page", page);
+        return R.ok(jsonObject);
     }
 
     private R<?> searchForStrategy(SearchQueryObject qo) {
-        return null;
+        Page<StrategyDTO> page = elasticsearchService.searchWithHighlight(StrategyEs.class, StrategyDTO.class, qo,
+                (clazz, id) -> articleFeignService.getStrategyById(id), "title", "subtitle", "summary");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("qo", qo);
+        jsonObject.put("page", page);
+        return R.ok(jsonObject);
     }
 
     private R<?> searchForDest(SearchQueryObject qo) {

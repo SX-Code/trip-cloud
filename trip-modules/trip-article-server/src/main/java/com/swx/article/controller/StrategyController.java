@@ -39,9 +39,14 @@ public class StrategyController {
     }
 
     @GetMapping("/detail")
-    public R<Strategy> getById(Long id) {
+    public R<Strategy> detail(Long id) {
         strategyService.viewnumIncr(id);
         return R.ok(strategyService.getById(id));
+    }
+
+    @GetMapping("/getById")
+    public Strategy getById(Long id) {
+        return strategyService.getOne(Wrappers.<Strategy>lambdaQuery().eq(Strategy::getId, id));
     }
 
     @PostMapping("/search")

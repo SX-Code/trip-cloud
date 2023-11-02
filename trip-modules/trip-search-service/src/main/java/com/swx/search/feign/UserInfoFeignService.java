@@ -22,4 +22,7 @@ public interface UserInfoFeignService {
 
     @GetMapping("/users/findByDestName")
     public R<List<UserInfoDTO>> findUserByDestName(@RequestParam String destName);
+
+    @GetMapping("/users/getById")
+    R<UserInfoDTO> getById(@RequestParam String id);
 }
