@@ -1,21 +1,17 @@
 package com.swx.search.controller;
 
 import com.alibaba.fastjson2.JSON;
-import com.swx.article.dto.DestinationDTO;
-import com.swx.article.dto.StrategyDTO;
-import com.swx.article.dto.TravelDTO;
 import com.swx.common.core.exception.BizException;
 import com.swx.common.core.qo.QueryObject;
 import com.swx.common.core.utils.R;
 import com.swx.common.redis.service.RedisService;
-import com.swx.search.DestinationEs;
-import com.swx.search.StrategyEs;
-import com.swx.search.TravelEs;
-import com.swx.search.UserInfoEs;
+import com.swx.search.domain.DestinationEs;
+import com.swx.search.domain.StrategyEs;
+import com.swx.search.domain.TravelEs;
+import com.swx.search.domain.UserInfoEs;
 import com.swx.search.feign.ArticleFeignService;
 import com.swx.search.feign.UserInfoFeignService;
 import com.swx.search.service.ElasticsearchService;
-import com.swx.user.dto.UserInfoDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +53,8 @@ public class ElasticsearchDataInitController {
     private final ArticleFeignService articleFeignService;
     private final ElasticsearchService elasticsearchService;
 
-    public ElasticsearchDataInitController(RedisService redisService, UserInfoFeignService userInfoFeignService, ArticleFeignService articleFeignService, ElasticsearchService elasticsearchService) {
+    public ElasticsearchDataInitController(RedisService redisService, UserInfoFeignService userInfoFeignService,
+                                           ArticleFeignService articleFeignService, ElasticsearchService elasticsearchService) {
         this.redisService = redisService;
         this.userInfoFeignService = userInfoFeignService;
         this.articleFeignService = articleFeignService;
@@ -81,13 +78,13 @@ public class ElasticsearchDataInitController {
         // 用户初始化
         EsDataInitStrategy userInit = new EsDataInitStrategy((qo) -> userInfoFeignService.findList(qo.getCurrent(), qo.getSize()), UserInfoEs.class);
         DATA_HANDLER_STRATEGY_MAP.put(INIT_USER, userInit);
-        // 文章初始化
+        // 攻略文章初始化
         EsDataInitStrategy strategyInit = new EsDataInitStrategy(articleFeignService::strategySearch, StrategyEs.class);
         DATA_HANDLER_STRATEGY_MAP.put(INIT_STRATEGY, strategyInit);
-
+        // 游记文章初始化
         EsDataInitStrategy travelInit = new EsDataInitStrategy(articleFeignService::travelSearch, TravelEs.class);
         DATA_HANDLER_STRATEGY_MAP.put(INIT_TRAVEL, travelInit);
-
+        // 目的地初始化
         EsDataInitStrategy destinationInit = new EsDataInitStrategy(articleFeignService::destinationSearch, DestinationEs.class);
         DATA_HANDLER_STRATEGY_MAP.put(INIT_DESTINATION, destinationInit);
     }

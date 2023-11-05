@@ -1,4 +1,4 @@
-package com.swx.search;
+package com.swx.search.domain;
 
 import lombok.Getter;
 import lombok.Setter;

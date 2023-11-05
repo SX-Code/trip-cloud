@@ -61,5 +61,4 @@ public class R<T> {
         }
         return data;
     }
-
 }

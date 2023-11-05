@@ -83,60 +83,9 @@ public class Md5Utils {
         return signatures;
     }
 
-//	public static String lowerCase32(String str) {
-//		try {
-//			MessageDigest md = MessageDigest.getInstance("MD5");
-//			try {
-//				md.update(str.getBytes("UTF8"));
-//			} catch (UnsupportedEncodingException e) {
-//				e.printStackTrace();
-//			}
-//			byte b[] = md.digest();
-//			int i;
-//			StringBuffer buf = new StringBuffer(200);
-//			for (int offset = 0; offset < b.length; offset++) {
-//				i = b[offset] & 0xff;
-//				if (i < 16)
-//					buf.append("0");
-//				buf.append(Integer.toHexString(i));
-//			}
-//			return buf.toString();
-//		} catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-//
-//	public static String upperCase32(String str) {
-//		String s = null;
-//		char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-//				'A', 'B', 'C', 'D', 'E', 'F' };
-//		final int temp = 0xf;
-//		final int arraySize = 32;
-//		final int strLen = 16;
-//		final int offset = 4;
-//		try {
-//			MessageDigest md = MessageDigest.getInstance("MD5");
-//			md.update(str.getBytes("UTF-8"));
-//			byte[] tmp = md.digest();
-//			char[] c = new char[arraySize];
-//			int k = 0;
-//			for (int i = 0; i < strLen; i++) {
-//				byte byte0 = tmp[i];
-//				c[k++] = hexDigits[byte0 >>> offset & temp];
-//				c[k++] = hexDigits[byte0 & temp];
-//			}
-//			s = new String(c);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return s;
-//	}
-
     public static void main(String[] args) {
         String str = "12345618888888888";
         String pass = Md5Utils.getMD5(str);
         System.out.println(pass);
     }
-
 }

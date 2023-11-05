@@ -16,7 +16,7 @@ import java.util.List;
 @FeignClient("article-service")
 public interface ArticleFeignService {
 
-    @GetMapping("/destinations/search")
+    @PostMapping("/destinations/search")
     public R<List<Object>> destinationSearch(@RequestBody QueryObject qo);
     @GetMapping("/destinations/getByName")
     public R<DestinationDTO> getDestByName(@RequestParam String name);

@@ -25,10 +25,4 @@ public class AppConfig {
         return new ThreadPoolExecutor(10, 50, 10, TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>(100));
     }
-
-    @PostConstruct
-    public void init() {
-        System.out.println("-------------- @PostConstruct --------------");
-    }
-
 }

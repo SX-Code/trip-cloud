@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class redisStatDataInitListener implements ApplicationListener<ContextRefreshedEvent> {
+public class RedisStatDataInitListener implements ApplicationListener<ContextRefreshedEvent> {
 
     private final StrategyService strategyService;
     private final RedisService redisService;
 
-    public redisStatDataInitListener(StrategyService strategyService, RedisService redisService) {
+    public RedisStatDataInitListener(StrategyService strategyService, RedisService redisService) {
         this.strategyService = strategyService;
         this.redisService = redisService;
     }
