@@ -1,0 +1,17 @@
+server:
+  port: 8091
+spring:
+  cloud:
+    nacos:
+      server-addr: xxx.xxx.xxx.xxx:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///trip-user?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: xxxxxx
+
+mybatis-plus:
+  mapper-locations: classpath*:com/swx/user/mapper/*.xml
+  type-aliases-package: com.swx.article.domain

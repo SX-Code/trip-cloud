@@ -1,0 +1,26 @@
+server:
+  port: 8092
+spring:
+  cloud:
+    nacos:
+      server-addr: xxx.xxx.xxx.xxx:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///trip-article?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: xxxxxxx
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.swx.article.domain
+
+aliyun:
+  oss: 
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucket-name: swcode-trip-cloud
+    domain: https://swcode-trip-cloud.oss-cn-beijing.aliyuncs.com/
+  accessKey:
+    id: 
+    secret: 

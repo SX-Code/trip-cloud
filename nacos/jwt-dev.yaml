@@ -1,0 +1,3 @@
+jwt:
+  secret: HhnQ3qZfWxp1nfqaK1Hhh3XSbKpw7uGjkpIRPS15igg=
+  expireTime: 30

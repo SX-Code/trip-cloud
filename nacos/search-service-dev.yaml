@@ -1,0 +1,14 @@
+server:
+  port: 8095
+spring:
+  cloud:
+    nacos:
+      server-addr: xxx.xxx.xxx.xxx:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+  elasticsearch:
+    rest:
+      uris: http://xxx.xxx.xxx.xxx:9200
+es:
+  init:
+    key: hg345f67gfdh5yth34g56

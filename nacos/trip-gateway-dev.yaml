@@ -1,0 +1,54 @@
+server:
+  port: 9000
+spring:
+  cloud:
+    nacos:
+      server-addr: xxx.xxx.xxx.xxx:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: trip_user
+          uri: lb://user-service
+          predicates:
+            # 路径匹配, 前缀匹配方式, 只要以 /product-serv/ 开头的请求, 都会被转发到 uri 上去
+            - Path=/u/**
+          # 过滤器, 执行真正的转发之前, 要执行哪些过滤器
+          filters:
+            # StripPrefix: 跳过前缀的过滤器, 此处配置为 1 则表示在转发请求前, 自动将第一个前缀删除
+            # 例如: 请求地址为 /product-serv/products/1, 此时将前缀删除后, 会变成 /products/1
+            - StripPrefix=1
+        - id: trip_article
+          uri: lb://article-service
+          predicates:
+            - Path=/article/**
+          filters:
+            - StripPrefix=1
+        - id: trip_comment
+          uri: lb://comment-service
+          predicates:
+            - Path=/comment/**
+          filters:
+            - StripPrefix=1
+        - id: trip_search
+          uri: lb://search-service
+          predicates:
+            - Path=/search/**
+          filters:
+            - StripPrefix=1

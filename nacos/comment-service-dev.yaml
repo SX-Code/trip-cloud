@@ -1,0 +1,12 @@
+server:
+  port: 8094
+spring:
+  cloud:
+    nacos:
+      server-addr: xxx.xxx.xxx.xxx:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+
+  data:
+    mongodb:
+      uri: mongodb://swcode:123456@xxx.xxx.xxx.xxx:27017/trip-comment

@@ -1,0 +1,14 @@
+server:
+  port: 8093
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///trip-article?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: xxxxxx
+
+mybatis-plus:
+  mapper-locations: classpath*:com.swx.data.mapper/*.xml
+  type-aliases-package: com.swx.article.domain
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
