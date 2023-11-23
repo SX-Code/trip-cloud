@@ -23,16 +23,16 @@ public class StrategyCommentController {
     }
 
     @GetMapping("/query")
-    public R<Page<StrategyComment>> saveComment(CommentQuery query) {
+    public R<Page<StrategyComment>> queryComment(CommentQuery query) {
         return R.ok(strategyCommentService.page(query));
     }
 
     @RequireLogin
     @PostMapping("/save")
-    public R<?> saveComment(Long strategyId, String strategyTitle) {
-        strategyCommentService.save(strategyId, strategyTitle);
+    public R<?> saveComment(StrategyComment comment) {
+        strategyCommentService.save(comment);
         // 评论数+1
-        strategyCommentService.replyNumIncr(strategyId);
+        strategyCommentService.replyNumIncr(comment.getStrategyId());
         return R.ok();
     }
 

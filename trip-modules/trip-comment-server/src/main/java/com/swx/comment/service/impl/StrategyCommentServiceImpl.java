@@ -65,15 +65,10 @@ public class StrategyCommentServiceImpl implements StrategyCommentService {
     /**
      * 保存评论
      *
-     * @param strategyId    攻略ID
-     * @param strategyTitle 攻略标题
+     * @param comment    攻略评论
      */
     @Override
-    public void save(Long strategyId, String strategyTitle) {
-        StrategyComment comment = new StrategyComment();
-        comment.setStrategyId(strategyId);
-        comment.setStrategyTitle(strategyTitle);
-
+    public void save(StrategyComment comment) {
         // 获取当前登陆用户
         LoginUser loginUser = AuthenticationUtil.getLoginUser();
         if (loginUser == null) {

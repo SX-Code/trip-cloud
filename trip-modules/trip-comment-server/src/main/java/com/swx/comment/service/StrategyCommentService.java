@@ -17,10 +17,9 @@ public interface StrategyCommentService {
     /**
      * 保存评论
      *
-     * @param strategyId    攻略ID
-     * @param strategyTitle 攻略标题
+     * @param comment    攻略评论
      */
-    void save(Long strategyId, String strategyTitle);
+    void save(StrategyComment comment);
 
     /**
      * 点赞和取消点赞
